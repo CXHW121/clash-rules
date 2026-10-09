@@ -16,7 +16,7 @@ rule-providers:
   my-github-rules:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/CXHW121/clash-rules/main/my-rules.yaml"
+    url: "https://raw.githubusercontent.com/CXHW121/clash-rules/refs/heads/main/my-rules.yaml"
     path: ./ruleset/my-github-rules.yaml
     interval: 86400
 
