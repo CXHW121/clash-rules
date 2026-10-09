@@ -1,0 +1,5 @@
+payload: []
+
+# 在此添加需要走代理的规则（每行一条），例如：
+#   - DOMAIN-SUFFIX,google.com
+#   - DOMAIN-KEYWORD,github

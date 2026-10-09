@@ -1,36 +1,38 @@
 # clash-rules
 
-个人 Clash Verge 远程规则集（rule-provider 格式，非订阅）。
+个人 Clash Verge 远程规则集（rule-provider 格式，非订阅），按用途拆分：
 
-## 规则文件
-
-- `my-rules.yaml` — 自定义规则集
+- `direct.yaml` — 直连规则集（命中的流量走 DIRECT）
+- `proxy.yaml` — 代理规则集（命中的流量走代理）
 
 ## 在 Clash Verge（Rev 2.x）中使用
 
-> 注意：**不要**使用 `prepend-rules` 写进 Merge 文件——Clash Verge Rev 2.x 已不支持该语法（内核也不识别），规则不会生效。正确做法分两处配置：
+> 注意：**不要**使用 `prepend-rules` 写进 Merge 文件——Clash Verge Rev 2.x 已不支持该语法（内核也不识别），规则不会生效。
 
-### 1. Merge 文件（定义规则集来源）
-
-订阅页面 → Merge（覆写/合并）配置，填入：
+### 1. Merge 文件（定义两个规则集来源）
 
 ```yaml
 rule-providers:
-  my-github-rules:
+  my-direct-rules:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/CXHW121/clash-rules/refs/heads/main/my-rules.yaml"
-    path: ./ruleset/my-github-rules.yaml
+    url: "https://raw.githubusercontent.com/CXHW121/clash-rules/refs/heads/main/direct.yaml"
+    path: ./ruleset/my-direct-rules.yaml
+    interval: 86400
+  my-proxy-rules:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/CXHW121/clash-rules/refs/heads/main/proxy.yaml"
+    path: ./ruleset/my-proxy-rules.yaml
     interval: 86400
 ```
 
-### 2. Rules 增强文件（把规则前插到规则链最前）
-
-订阅卡片 → 编辑 → Rules（规则）增强，填入：
+### 2. Rules 增强文件（前插到规则链最前）
 
 ```yaml
 prepend:
-  - RULE-SET,my-github-rules,DIRECT
+  - RULE-SET,my-direct-rules,DIRECT
+  - RULE-SET,my-proxy-rules,🚀 节点选择
 
 append: []
 
@@ -38,7 +40,8 @@ delete: []
 ```
 
 > 说明：
-> - `prepend` 将规则插入订阅规则列表最前面，避免被订阅自带的兜底 MATCH 规则拦截
-> - `RULE-SET` 第三个参数是规则集内规则**未指定策略**时使用的默认策略；本规则集内规则自带 `DIRECT`，此处写 `DIRECT` 保持一致（写不存在的策略组名会导致内核校验失败）
-> - 修改后需在 Clash Verge 重新应用配置（点击订阅卡片）并重启内核后生效
-> - 若拉取规则失败（国内直连 GitHub 不稳定），可在 `url` 前加加速镜像（如 `https://ghproxy.net/`）
+> - 出口策略由引用行决定，规则集文件只描述"匹配什么"（拆分的意义：同一条规则集合可由不同引用方决定走向）
+> - `🚀 节点选择` 为策略组名，必须与当前订阅中真实存在的名称一字不差（含 emoji），否则内核启动失败
+> - 两条引用的先后顺序即匹配优先级：先直连集、后代理集
+> - 修改后需在 Clash Verge 重新应用配置并重启内核后生效
+> - 若拉取失败（国内直连 GitHub 不稳定），可在 `url` 前加加速镜像（如 `https://ghproxy.net/`）
