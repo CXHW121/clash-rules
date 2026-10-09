@@ -1,2 +1,4 @@
-payload:
-  - DOMAIN-KEYWORD,opencode
+payload: []
+
+# 在此添加需要直连的规则（每行一条），例如：
+#   - DOMAIN-KEYWORD,example
