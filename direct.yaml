@@ -1,4 +1,8 @@
-payload: []
+payload:
+  - DOMAIN,opncd.ai
+  - DOMAIN,blog.yerong.org
+  - DOMAIN,launcher.keychron.cn
+  - DOMAIN,invite.linuxdo.org
 
 # 在此添加需要直连的规则（每行一条），例如：
 #   - DOMAIN-KEYWORD,example
